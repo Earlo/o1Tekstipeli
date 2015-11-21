@@ -1,18 +1,46 @@
 package o1.adventure
 
-/** The class `Item` represents items in a text adventure game. Each item has a name 
-  * and a  *  longer description. (In later versions of the adventure game, items may 
-  * have other features as well.)
-  *
-  * N.B. It is assumed, but not enforced by this class, that items have unique names. 
-  * That is, no two items in a game world have the same name.
-  *
-  * @param name         the item's name
-  * @param description  the item's description
-  */
-class Item(val name: String, val description: String) {
+import scala.collection.mutable.Buffer
+
+class Item(val name:String, val description: String) {
+  def uses = List("")
   
-  /** Returns a short textual representation of the item (its name, that is). */
-  override def toString = this.name
-  
+  //override def uses = this.getClass.getInterfaces.toList.map( super[_].uses).sum
+ 
+  override def toString = this.description
 }
+
+trait Edible {
+  def uses = List("eat")
+  
+  def eat() ={
+    "Nom nom nom"
+  }
+}
+
+trait Wearable {
+  def uses = List("wear")
+ 
+  def wear() ={
+    "oh wow, looks fancy"
+  }
+}
+
+class ChocolateHat(name:String, desc:String) extends Item(name, desc) with Edible with Wearable {
+  override val uses = super[Edible].uses ++ super[Wearable].uses
+  
+  //TODO it would be so cool to get this to work. ;:-l
+  //override def uses = this.getClass.getInterfaces.toList.map( super[_].uses).sum
+}
+
+
+//testing
+//object Main extends App {
+//  val c = new ChocolateHat("Choco","a hat")
+//
+//  println(c.uses  )
+//  println(c.eat())
+//  println(c.wear())
+//
+//
+//}

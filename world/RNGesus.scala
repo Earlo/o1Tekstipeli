@@ -10,8 +10,7 @@ import scala.math._
 
 object RNGesus {
     //TODO make it better 
-  val Names = """Aapeli, Elmer, Elmo, Ruut, Lea, Leea, Harri, Aku, August, Aukusti, Hilppa, Titta, Veijo, Veikko, Veli, Nyyrikki, Kari, Karri, Toini, Nuutti, Sakari, Saku
-                              Solja, Ilmari, Ilmo, Anton, Antto, Anttoni, Toni, Laura, Heikki, Henri, Henrik, Henrikki, Aune, Auni, Oona""".replaceAll(" ", "").split(",")
+  var Names = """Aapeli, Elmer, Elmo, Ruut, Lea, Leea, Harri, Aku, August, Aukusti, Hilppa, Titta, Veijo, Veikko, Veli, Nyyrikki, Kari, Karri, Toini, Nuutti, Sakari, Saku, Solja, Ilmari, Ilmo, Anton, Antto, Anttoni, Toni, Laura, Heikki, Henri, Henrik, Henrikki, Aune, Auni, Oona""".replaceAll(" ", "").split(",").toBuffer
   val dice = scala.util.Random
   
   def roll( max:Int = 0, min:Int = 0) = {
@@ -38,9 +37,9 @@ object RNGesus {
       min + abs(this.dice.nextInt())*mult
     }
   }
-  
+  //remove to make sure no one gets the same name. Poses the problem of having limited amount of NPCs TODO fix
   def baptise( ) = {
-   Names(dice.nextInt(Names.length))
+   Names.remove(dice.nextInt(Names.length))
   }
   
 }

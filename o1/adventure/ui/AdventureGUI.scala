@@ -8,6 +8,7 @@ import scala.swing.GridBagPanel.Fill
 import javax.swing.UIManager
 import o1.adventure.Adventure
 import world.World
+import o1.adventure.NPC
 
 
 ////////////////// NOTE TO STUDENTS //////////////////////////
@@ -37,7 +38,6 @@ object AdventureGUI extends SimpleSwingApplication {
   
     val game = new Adventure
     val player = World.player
-    
     // Components: 
 
     val locationInfo = new TextArea(7, 80) {
@@ -121,32 +121,9 @@ object AdventureGUI extends SimpleSwingApplication {
 
     
   } 
-  def StartChat() = {
-      val Chat = new ChatWindow()
+  def StartChat( other:NPC, text:String = "" ) = {
+    val Chat = new ChatWindow( other, text = text ) 
   }
 }  
 
-class ChatWindow extends Dialog {
-
-  title = "Chat"
-  modal = true
-
-  contents = new BorderPanel {
-//    layout(new BoxPanel(Orientation.Vertical) {
-//      border = Swing.EmptyBorder(5,5,5,5)
-//
-//      contents += new Label("just:")
-//      contents += new Label("a test:")
-//    }) = scala.swing.BorderPanel.Position.Center
-
-    layout(new FlowPanel(FlowPanel.Alignment.Right)(
-      Button("Say Something") {
-        Dialog.showMessage(this, "Hello :D!")
-      }
-    )) = scala.swing.BorderPanel.Position.South
-  }
-
-  centerOnScreen()
-  open()
-}
   

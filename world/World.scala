@@ -15,8 +15,9 @@ object World {
   
   val time = new Time()
   println (this.time)
-  var extraTime = Buffer[Int](0,0)
+  var dTime = Buffer[Int](0,0) //delta time
   var Areas = Buffer[Area]()
+  var NPCs = Buffer[NPC]()
   
   
   // TODO maybe something that would make the code more neat when there is a lot of areas
@@ -31,7 +32,7 @@ object World {
   Home.setNeighbors("north" -> Outside )
   Outside.setNeighbors( "south" -> Home  )
   
-//   Check all of the areas and do something if there is something that needst to be done
+//   Check all of the areas and do something if there is something that needs to be done
   for (A <- Areas){
     A.act()
   }
@@ -40,14 +41,12 @@ object World {
   val player = new Player(Home)
   
   def startChat( player:Player, other:NPC){
-    println("TESTING")
-    AdventureGUI.StartChat()
+    AdventureGUI.StartChat( other )
   }
   def passTime(){
-    //something smart will happen here later :D
     
-    this.time.increment( m = 5 + this.extraTime(0), h = this.extraTime(1))
-    extraTime = Buffer[Int](0,0)
+    this.time.increment( m = this.dTime(0), h = this.dTime(1))
+    this.dTime = Buffer[Int](0,0)
   }
 }
 

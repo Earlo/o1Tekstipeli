@@ -9,11 +9,11 @@ package o1.adventure
   */
 class Action(input: String) {
   
-  private val unNeededWords = List("TO","WITH","TOWARDS","AGAINST")
+  private val unNeededWords = List("TO","WITH","TOWARDS","AGAINST","FOR")
   
   private val commandText = input.trim.toUpperCase
   private val verb        = commandText.takeWhile( _ != ' ' )
-  private val givenModifiers   = commandText.drop(verb.length).trim.split(" ").filter( !this.unNeededWords.contains(_) )
+  private val givenModifiers   = commandText.drop(verb.length).trim.split(" ").map(_.replace(" ", "")).filter( !this.unNeededWords.contains(_) )
  
 
   /** Causes the given player to take the action represented by this object, assuming 
@@ -23,19 +23,20 @@ class Action(input: String) {
   def execute(actor: Player): Option[String] = {        
     
     val Skey = Player.commands.keys.toList.find( k => k.exists( _ == this.verb) )
-    
     if ( !Skey.isEmpty ){
       val key = Skey.get
       val paramNum = Player.commands(key).last.toInt
       val funk = Player.commands(key).head
       val modifiers = this.givenModifiers.take(paramNum)
-      
-      if ( modifiers.isEmpty ){
+      if ( modifiers.isEmpty && paramNum == 0 ){
           Some( actor.getClass.getMethod( funk ).invoke( actor ).toString() )      
         }
-      else {
+      else if ( modifiers.length == paramNum ){
           Some( actor.getClass.getMethod(funk, modifiers.map(_.getClass):_* ).invoke( actor, modifiers.map(_.toLowerCase()):_* ).toString() )    
         }
+      else{
+        None
+      }
 
     }
     else {

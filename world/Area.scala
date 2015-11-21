@@ -9,7 +9,8 @@ import o1.adventure.NPC
 // Contains the stuff common to all areas
 object Area {
   
-  val events:Map[String, String ] = Map( "OPEN" -> "populate" )
+  val events:Map[String, List[String] ] = Map( "OPEN" -> List("populate") )
+  
 }
 
 /** The class `Area` represents locations in a text adventure game world. A game world 
@@ -36,7 +37,8 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   def act(){
     for (f <- this.flags){
       if ( Area.events.keys.toList.contains(f) ){
-         this.getClass.getMethod(  Area.events(f) ).invoke( this )
+         for (e <- Area.events(f) )
+         this.getClass.getMethod( e ).invoke( this )
       }
     }
   }
@@ -82,7 +84,6 @@ class Area(var name: String, var description: String, var flags: List[String] = 
    val exitList = "\n\nExits available: " + this.neighbors.keys.mkString(" ")
    var itemList = this.getItemString()
    var charList = this.getCharString()
-   println( itemList + charList)
    this.description + itemList + charList + exitList 
   } 
   

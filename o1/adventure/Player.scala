@@ -14,7 +14,8 @@ object Player{
   // keyword that trigger the method -> method name, number of arguments
   val commands:Map[List[String], List[String]] = Map( List("GO","HEAD") -> List("go","1"),
                                                       List("QUIT","EXIT") -> List("quit","0"),
-                                                      List("REST","WAIT") -> List("rest","0"),
+                                                      List("REST") -> List("rest","0"),
+                                                      List("WAIT") -> List("wait","1"),
                                                       List("EXAMINE") -> List("examine", "1"),
                                                       List("LOOK") -> List("look","0"),
                                                       List("DROP") -> List("drop", "1"),
@@ -22,7 +23,8 @@ object Player{
                                                       List("HAS") -> List("has", "1"),
                                                       List("TALK","CHAT") -> List("talk", "1"),
                                                       List("INVENTORY","ITEMS") -> List("inventory","0")
-                                                     )
+                                                     )                                                     
+                                                   
 }
 
 class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRTG")) extends Character( loc, name, flags) {
@@ -31,6 +33,8 @@ class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRT
   
   /** Determines if the player has indicated a desire to quit the game. */
   def hasQuit = this.quitCommandGiven
+  
+  val chat = new ChatPC()
   
   def inventory ={
    var itemList = "You are empty-handed."     
@@ -94,15 +98,37 @@ class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRT
   def go(direction: String) = {
     val destination = this.location.neighbor(direction)
     this.location = destination.getOrElse(this.location) 
-    if (destination.isDefined) "You go " + direction + "." else "You can't go " + direction + "."
+    if (destination.isDefined){ 
+      World.dTime(0) += 5
+      "You go " + direction + "."
+    } 
+    else{
+      "You can't go " + direction + "."
+    }
   }
 
+  def wait( t:String ) = {
+    val time = t.replace("m","")
+    try{
+      World.dTime(0) += time.toInt
+      "You wait for a while. Better get a move on, though."
+    }
+    catch {
+      case e:NumberFormatException => "Please specify the time you want to wait in minutes"
+    }
+
+  }
   
   /** Causes the player to rest for a short while (this has no substantial effect in game terms).
     * Returns a description of what happened. */
   def rest() = {
-    World.extraTime(0) += 50
-    "You rest for a while. Better get a move on, though." 
+    if ( this.location.flags.contains("HOME") ){
+          World.dTime(1) += 8
+          "You sleep for 8 hours." 
+    }
+    else{
+      "This is hardly a suitable place for resting"
+    } 
   }
   
   
