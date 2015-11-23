@@ -29,6 +29,8 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   private val items     = Map[String, Item]()
   private var inhabitants = Buffer[NPC]()
   
+  val eventSchedule:Map[String, String] = Map( "11200:11300" -> "funktionNimi")
+  
   /** Returns the area that can be reached from this area by moving in the given direction. The result 
     * is returned in an `Option`; `None` is returned if there is no exit in the given direction. */
   def neighbor(direction: String) = this.neighbors.get(direction)
@@ -37,9 +39,16 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   def act(){
     for (f <- this.flags){
       if ( Area.events.keys.toList.contains(f) ){
-         for (e <- Area.events(f) )
-         this.getClass.getMethod( e ).invoke( this )
-      }
+         for (e <- Area.events(f) ){
+           this.getClass.getMethod( e ).invoke( this )
+         }
+       }
+    }
+    for (t <- this.eventSchedule.keys){
+      val interval = t.split(":")
+      if (World.time.asMilitaryTime() > interval(0).toInt && World.time.asMilitaryTime() < interval(1).toInt){
+          this.getClass.getMethod( this.eventSchedule(t) ).invoke( this )
+       }
     }
   }
   
@@ -85,7 +94,7 @@ class Area(var name: String, var description: String, var flags: List[String] = 
    var itemList = this.getItemString()
    var charList = this.getCharString()
    this.description + itemList + charList + exitList 
-  } 
+  }
   
   
   def getItemString() = {

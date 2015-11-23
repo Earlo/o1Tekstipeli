@@ -14,7 +14,9 @@ import scala.collection.mutable.Map
  * A base of NPC and Player classes
  */
 
-abstract class Character( var location:Area, val name:String, var flags:List[String], var stats: Map[String, Int] ) {
+
+abstract class Character( var location:Area, val name:String, var stats: Map[String, Int], var flags:List[String] ) {
+
   
   val items = Map[String, Item]() 
   

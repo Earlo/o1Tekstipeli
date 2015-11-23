@@ -10,7 +10,6 @@ import scala.collection.mutable.Buffer
  */
 class ChatPC {
   
-  val parent = World.player
   val log = Buffer[String]() // Keeps track of stuff the player has talk about
   
   def greet() = {
@@ -20,7 +19,7 @@ class ChatPC {
   
   def introduce() = {
     this.log += "intro"
-    "You: I am " + "jebu" + "\n"
+    "You: I am " + World.player.name + "\n"
   }
 }
 

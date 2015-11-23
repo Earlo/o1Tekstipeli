@@ -14,7 +14,7 @@ object NPC{
   
   def generateRandom( loc: Area) = {
     
-    val newGuy = new NPC( loc, RNGesus.baptise(), 10)
+    val newGuy = new NPC( loc, RNGesus.baptise())
     World.NPCs += newGuy
     newGuy
   }
@@ -26,8 +26,10 @@ object NPC{
 
 }
 
-class NPC(loc: Area, name: String, startingHP: Int, flags: List[String] = List("NORM"), stats: Map[String, Int] = Map[String, Int]()) extends Character( loc, name, flags, stats) {
-  
+
+
+class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() ,flags: List[String] = List("NORM")) extends Character( loc, name, stats, flags) {
+
   
   def has( name: String ) = {
     this.items.contains( name )
