@@ -28,8 +28,9 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   private val neighbors = Map[String, Area]()
   private val items     = Map[String, Item]()
   private var inhabitants = Buffer[NPC]()
+  private val capacity: Int = 25
   
-  val eventSchedule:Map[String, String] = Map( "11200:11300" -> "funktionNimi")
+  val eventSchedule:Map[String, String] = Map( "11100:11300" -> "populate")
   
   /** Returns the area that can be reached from this area by moving in the given direction. The result 
     * is returned in an `Option`; `None` is returned if there is no exit in the given direction. */
@@ -53,14 +54,16 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   }
   
   def populate(){
-    val pop = RNGesus.roll( 4, 1)
-    for (p <- Range(0,pop)){
-      this.inhabitants += NPC.generateRandom( this )
+    if (this.population < this.capacity) {
+      val pop = RNGesus.roll( 4, 1)
+      for (p <- Range(0,pop)){
+        this.inhabitants += NPC.generateRandom( this )
+      }
     }
   }
 
+  def population = this.inhabitants.length
   
-
   /** Adds exits from this area to the given areas. Calling this method is equivalent to calling 
     * the `setNeighbor` method on each of the given direction--area pairs.
     *

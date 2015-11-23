@@ -1,5 +1,5 @@
 package o1.adventure
 
-class Zombie {
+class Zombie extends NPC {
   
 }

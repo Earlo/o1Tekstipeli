@@ -27,14 +27,10 @@ object Player{
                                                    
 }
 
-<<<<<<< HEAD
-class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRTG"), stats: Map[String, Int]) extends Character( loc, name, flags, stats) {
 
-=======
 
 class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags:List[String] = List("PRTG") ) extends Character( loc, name, stats, flags) {
     
->>>>>>> upstream/master
   private var quitCommandGiven = false              // one-way flag   
   
   /** Determines if the player has indicated a desire to quit the game. */
