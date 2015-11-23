@@ -17,6 +17,10 @@ class Adventure {
   /** The title of the adventure game. */
   val title = "The Game"
     
+  
+
+  
+  
 //  private val middle      = new Area("Forest", "You are somewhere in the forest. There are a lot of trees here.\nBirds are singing.")
 //  private val northForest = new Area("Forest", "You are somewhere in the forest. A tangle of bushes blocks further passage north.\nBirds are singing.")
 //  private val southForest = new Area("Forest", "The forest just goes on and on.")

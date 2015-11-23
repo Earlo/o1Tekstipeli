@@ -2,7 +2,7 @@ package o1.adventure
 
 import scala.collection.mutable.Buffer
 
-class Item(val name:String, val description: String) {
+abstract class Item(val name:String, val description: String, val owner:Option[Character] = None) {
   def uses = List("")
   
   //override def uses = this.getClass.getInterfaces.toList.map( super[_].uses).sum

@@ -37,6 +37,12 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags
   
   val chat = new ChatPC()
   
+  // something better here
+  def chooseTarget() = {
+    this.enemies(0)
+  }
+
+  
   def inventory ={
    var itemList = "You are empty-handed."     
    if (this.items.size >= 1){
@@ -46,6 +52,10 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags
      itemList = "There is"  + this.items.keys.mkString("") + "in your bag."
    }
    itemList
+  }
+
+  def itemUses() = {
+    this.items.values.toList.flatMap( _.uses )
   }
   
   def has( name: String ) = {

@@ -39,7 +39,6 @@ class Time(var d:Int = 1, var h:Int = 0, var m:Int = 0){
     
   }
   override def toString() = {
-    println(this.asMilitaryTime())
     "It's "+this.withTwoDigits(this.h)+":"+this.withTwoDigits(this.m)+" on the " + this.d.toString + this.numSuffix(this.d) + " day."
   }
 }

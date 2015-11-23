@@ -16,7 +16,11 @@ import scala.collection.mutable.Map
 
 abstract class Character( var location:Area, val name:String, var stats: Map[String, Int], var flags:List[String] ) {
   
+  var enemies = List[Character]()
+  
   val items = Map[String, Item]() 
+  
+  def chooseTarget():Character
   
   def setHitPoints(amount: Int) = this.stats("hitpoints") += amount
   

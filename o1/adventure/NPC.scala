@@ -47,6 +47,9 @@ class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() 
   
   val chat = new ChatNPC( this )
 
+  def chooseTarget() = {
+    this.enemies(0)
+  }
 
   /** Attempts to move the player in the given direction. This is successful if there 
     * is an exit from the player's current location towards the direction name. 

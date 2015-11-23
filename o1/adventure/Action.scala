@@ -40,6 +40,13 @@ class Action(input: String) {
       }
 
     }
+    else if( actor.items.keys.toList.contains( givenModifiers(0).toLowerCase() ) ){
+      val i = actor.items( givenModifiers(0).toLowerCase() )
+      //verb.toLowerCase() actor.items.keys.toList.contains( givenModifiers(0) )  && actor.itemUses().contains( verb.toLowerCase() )
+      val target:Option[Item] = None
+      target = givenModifiers
+      ???
+    }
     else {
       None
       }
