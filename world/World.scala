@@ -38,7 +38,7 @@ object World {
   }
   
   
-  val player = new Player(Home)
+  val player = new Player(Home, "The Main Dude")
   
   def startChat( player:Player, other:NPC){
     AdventureGUI.StartChat( other )

@@ -28,6 +28,7 @@ class Action(input: String) {
       val paramNum = Player.commands(key).last.toInt
       val funk = Player.commands(key).head
       val modifiers = this.givenModifiers.take(paramNum)
+      
       if ( modifiers.isEmpty && paramNum == 0 ){
           Some( actor.getClass.getMethod( funk ).invoke( actor ).toString() )      
         }

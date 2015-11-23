@@ -34,7 +34,12 @@ class Time(var d:Int = 1, var h:Int = 0, var m:Int = 0){
     num.toString.reverse.padTo(2, "0").reverse.mkString("")
   }
   
+  def asMilitaryTime() = {
+    (this.d.toString+this.withTwoDigits(this.h)+this.withTwoDigits(this.m)).toInt
+    
+  }
   override def toString() = {
+    println(this.asMilitaryTime())
     "It's "+this.withTwoDigits(this.h)+":"+this.withTwoDigits(this.m)+" on the " + this.d.toString + this.numSuffix(this.d) + " day."
   }
 }

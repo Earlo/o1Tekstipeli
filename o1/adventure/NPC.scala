@@ -27,6 +27,8 @@ object NPC{
 }
 
 class NPC(loc: Area, name: String, flags: List[String] = List("NORM")) extends Character( loc, name, flags) {
+    
+  var HP = 10
   
   def has( name: String ) = {
     this.items.contains( name )

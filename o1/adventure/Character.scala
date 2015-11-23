@@ -17,5 +17,6 @@ import scala.collection.mutable.Map
 abstract class Character( var location:Area, val name:String, var flags:List[String] ) {
   
   val items = Map[String, Item]() 
+  println(this.name)
   
 }

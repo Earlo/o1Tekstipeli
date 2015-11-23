@@ -27,8 +27,10 @@ object Player{
                                                    
 }
 
-class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRTG")) extends Character( loc, name, flags) {
+class Player(loc: Area, name:String, flags:List[String] = List("PRTG")) extends Character( loc, name, flags) {
 
+  var HP = 10
+    
   private var quitCommandGiven = false              // one-way flag   
   
   /** Determines if the player has indicated a desire to quit the game. */
