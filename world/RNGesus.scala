@@ -2,6 +2,7 @@ package world
 
 import scala.util.Random
 import scala.math._
+import scala.collection.mutable.Map
 
 /**
  * @author pollarv1
@@ -40,6 +41,10 @@ object RNGesus {
   //remove to make sure no one gets the same name. Poses the problem of having limited amount of NPCs TODO fix
   def baptise( ) = {
    Names.remove(dice.nextInt(Names.length))
+  }
+  
+  def getStats( ) = {
+    Map("hitpoints" -> this.roll(20,10).toString, "precision" -> this.rollD( ).toString , "strength" -> this.roll(1,10).toString  )
   }
   
 }

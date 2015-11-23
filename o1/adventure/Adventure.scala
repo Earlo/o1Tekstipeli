@@ -43,12 +43,28 @@ class Adventure {
     * report of what happened, or an error message if the command was unknown. In the latter 
     * case, no turns elapse. */
   def playTurn(command: String) = {
+    World.passTime() 
     val action = new Action(command)
-    val outcomeReport = action.execute(World.player)
-    if (outcomeReport.isDefined) { 
-      World.passTime() 
+    if (World.combat.isEmpty){
+      val outcomeReport = action.execute(World.player)
+      if (outcomeReport.isDefined) { 
+      }
+      outcomeReport.getOrElse("Unknown command: \"" + command + "\".")
     }
-    outcomeReport.getOrElse("Unknown command: \"" + command + "\".")
+    else{
+      val action = new Action(command)
+      if (action.BattleExecute(World.player)){
+        var report = ""
+        do{
+          report += World.combat.get.playTrun()
+        }while (!(World.combat.get.getNext() == world.player) )
+          
+        World.combat.toString + report
+      }
+      else{
+        World.combat.get.info()
+      }
+    }
   }
   
   

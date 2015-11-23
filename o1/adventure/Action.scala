@@ -11,9 +11,9 @@ class Action(input: String) {
   
   private val unNeededWords = List("TO","WITH","TOWARDS","AGAINST","FOR")
   
-  private val commandText = input.trim.toUpperCase
-  private val verb        = commandText.takeWhile( _ != ' ' )
-  private val givenModifiers   = commandText.drop(verb.length).trim.split(" ").map(_.replace(" ", "")).filter( !this.unNeededWords.contains(_) )
+  private val commandText = input.trim
+  private val verb        = commandText.toUpperCase.takeWhile( _ != ' ' )
+  private val givenModifiers   = commandText.toUpperCase.drop(verb.length).trim.split(" ").map(_.replace(" ", "")).filter( !this.unNeededWords.contains(_) )
  
 
   /** Causes the given player to take the action represented by this object, assuming 
@@ -53,6 +53,28 @@ class Action(input: String) {
       }
   }
 
+  
+  def BattleExecute(actor: Player): Boolean = { 
+    val input = ( commandText.split(" ") ).toSet
+    val attacks = actor.battleOption().toSet
+    val targets = actor.enemies.map( _.name ).toSet
+    
+    println( input, attacks, targets)
+    if ( input.intersect(attacks).size == 1 && input.intersect(targets).size == 1 ){
+      actor.nextAttack = input.intersect(attacks).toList(0)
+      actor.nextTarget = input.intersect(targets).toList(0)
+      true
+    }
+//    else if( commandText.capitalize.split(" ").contains("RUN"){
+//      
+//    }
+    
+    else{
+      false
+    }
+
+  }
+  
   /** Returns a textual description of the action object, for debugging purposes. */
   override def toString = this.verb + " (modifiers: " + this.givenModifiers + ")"  
   

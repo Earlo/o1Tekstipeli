@@ -6,9 +6,8 @@ import scala.swing.event._
 import scala.swing.GridBagPanel.Anchor._
 import scala.swing.GridBagPanel.Fill
 import javax.swing.UIManager
-import o1.adventure.Adventure
 import world.World
-import o1.adventure.NPC
+import o1.adventure._
 
 
 ////////////////// NOTE TO STUDENTS //////////////////////////
@@ -115,15 +114,15 @@ object AdventureGUI extends SimpleSwingApplication {
       } else {
         this.turnOutput.text = info + "\n\n" + this.game.goodbyeMessage
       }
-      this.locationInfo.text = this.player.location.fullDescription
+      this.locationInfo.text = World.getText() //this.player.location.fullDescription
       this.turnCounter.text =  World.time.toString
     }
 
     
   } 
-  def StartChat( other:NPC, text:String = "" ) = {
+  def StartChat( other:Character, text:String = "" ) = {
     val Chat = new ChatWindow( other, text = text ) 
   }
+
 }  
 
-  

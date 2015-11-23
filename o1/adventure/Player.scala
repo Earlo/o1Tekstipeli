@@ -3,6 +3,8 @@ package o1.adventure
 import world._
 
 import scala.collection.mutable.Map
+import scala.collection.mutable.Buffer
+
 
 /** A `Player` object represents a player character controlled by the real-life user of the program. 
   *
@@ -29,15 +31,21 @@ object Player{
 
 
 
-class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags:List[String] = List("PRTG") ) extends Character( loc, name, stats, flags) {
+class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], flags:List[String] = List("PRTG") ) extends Character( loc, name, stats, flags) {
+  //newer going to be used but had do do it anyway  
+  val chatNPC = new ChatNPC( this )
     
   private var quitCommandGiven = false              // one-way flag   
   
   /** Determines if the player has indicated a desire to quit the game. */
   def hasQuit = this.quitCommandGiven
   
-  val chat = new ChatPC()
+  val chat = new ChatPC() 
+  var Party: Buffer[Character] = Buffer()
   
+  var nextAttack = ""
+  var nextTarget = ""
+
   // something better here
   def chooseTarget() = {
     this.enemies(0)
@@ -67,8 +75,13 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags
     var result = name.capitalize + " is not here."
     val target = this.location.isHere( name )
     if ( !target.isEmpty ){
-      World.startChat( this, target.get )
-      result = "you start to chat with  " + target.get.toString() +"."
+      if (!target.get.flags.contains("ZOMB") ){
+        World.startChat( this, target.get )
+        result = "you had a chat with  " + target.get.toString() +"."
+      }
+      else{
+        "your mum told you not to talkk with the undead"
+      }
     }
     result
   }
@@ -150,7 +163,32 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, Int], flags
     this.quitCommandGiven = true
     ""
   }
-
+  
+  def battleOption() = {
+   val additionalOptions =  this.items.values.toBuffer.filter( _.uses.contains("attack") ).map(_.name)
+   println (additionalOptions)
+   Buffer[String]("run","punch") ++ additionalOptions
+  }
+  
+  def bOptionMap() = {
+    val options = this.battleOption
+    (options.indices zip options).toMap
+  }
+  
+  def attack() = {
+      println(this.nextAttack, this.nextTarget )
+      val attack = 1
+      if (!(this.nextAttack == "punch")){
+        val attack = this.items(this.nextAttack).attack()
+      }
+      println(attack)
+      val target = this.enemies.filter( _.name == this.nextTarget ).head
+      println(target)
+      if (RNGesus.rollD() < this.precision.toDouble) {
+        target.setHitPoints(-this.strength.toInt * attack) 
+        "You attaked" + target.name + " for " + (this.strength.toInt * attack).toString() + " damage"
+    } else this.name + " missed " + target.name
+  }
   
   /** Returns a brief description of the player's state, for debugging purposes. */
   override def toString = "Now at: " + this.location.name   

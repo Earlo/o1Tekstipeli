@@ -11,7 +11,6 @@ import scala.collection.mutable.Map
 
 
 object NPC{
-  
   def generateRandom( loc: Area) = {
     
     val newGuy = new NPC( loc, RNGesus.baptise())
@@ -22,13 +21,9 @@ object NPC{
   val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("greet"), List("introduce", "greet") )  )
   //val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("greet"), List("introduce") )  )
   //val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("introduce") )  )
-
-
 }
 
-
-
-class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() ,flags: List[String] = List("NORM")) extends Character( loc, name, stats, flags) {
+class NPC(loc: Area, name: String, stats: Map[String, String] = Map[String, String]() ,flags: List[String] = List("NORM")) extends Character( loc, name, stats, flags) {
 
   
   def has( name: String ) = {
@@ -36,18 +31,18 @@ class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() 
   }
   var relationToPC = 0
   
-  def chatOptions() = {
+  override def chatOptions() = {
     val baseOptions = NPC.chatMap( this.relationToPC )
     var r = Buffer[String]()
     for (o <- baseOptions){
-      if (o.tail.isEmpty || o.tail.forall( this.chat.log.contains(_) ) ){
+      if (o.tail.isEmpty || o.tail.forall( this.chatNPC.log.contains(_) ) ){
         r += o.head
       }
     }
     r
   }
   
-  val chat = new ChatNPC( this )
+  val chatNPC = new ChatNPC( this )
 
   def chooseTarget() = {
     this.enemies(0)
@@ -60,10 +55,17 @@ class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() 
     val destination = this.location.neighbor(direction)
     this.location = destination.getOrElse(this.location) 
     if (destination.isDefined) this.name+" goes to " + direction + "." else ""
-  }  
+  } 
+  
+  override def act() = {
+    //TODO
+  }
   
   /** Returns a brief description of the player's state, for debugging purposes. */
   override def toString = this.name   
 
-
+  def toZombie() = {
+    new Zombie( this.loc, this.name, this.stats, this.flags )
+    
+  }
 }

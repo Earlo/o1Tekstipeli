@@ -2,14 +2,16 @@ package world
 
 import scala.collection.mutable.Map
 import scala.collection.mutable.Buffer
-import o1.adventure.Item
-import o1.adventure.NPC
+
+import o1.adventure._
+
 
 
 // Contains the stuff common to all areas
 object Area {
   
-  val events:Map[String, List[String] ] = Map( "OPEN" -> List("populate") )
+  val events:Map[String, List[String] ] = Map( "OPEN" -> List("populate"),
+                                              "ZOMB" -> List("addZ") )
   
 }
 
@@ -27,7 +29,7 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   
   private val neighbors = Map[String, Area]()
   private val items     = Map[String, Item]()
-  private var inhabitants = Buffer[NPC]()
+  private var inhabitants = Buffer[Character]()
   private val capacity: Int = 25
   
   val eventSchedule:Map[String, String] = Map( "11100:11300" -> "populate")
@@ -37,7 +39,7 @@ class Area(var name: String, var description: String, var flags: List[String] = 
   def neighbor(direction: String) = this.neighbors.get(direction)
 
   // Area.act makes events happen inside Areas
-  def act(){
+  def initAct(){
     for (f <- this.flags){
       if ( Area.events.keys.toList.contains(f) ){
          for (e <- Area.events(f) ){
@@ -45,6 +47,8 @@ class Area(var name: String, var description: String, var flags: List[String] = 
          }
        }
     }
+  }
+ def act(){
     for (t <- this.eventSchedule.keys){
       val interval = t.split(":")
       if (World.time.asMilitaryTime() > interval(0).toInt && World.time.asMilitaryTime() < interval(1).toInt){
@@ -60,6 +64,10 @@ class Area(var name: String, var description: String, var flags: List[String] = 
         this.inhabitants += NPC.generateRandom( this )
       }
     }
+  }
+  
+  def addZ(){
+    this.inhabitants += Zombie.generateRandom( this )
   }
 
   def population = this.inhabitants.length

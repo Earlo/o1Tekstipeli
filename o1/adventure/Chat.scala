@@ -23,7 +23,7 @@ class ChatPC {
   }
 }
 
-class ChatNPC( val parent:NPC ) {
+class ChatNPC( val parent:Character ) {
   val log = Buffer[String]() // keeps track of the things NPC has talked about
   var change = false
   

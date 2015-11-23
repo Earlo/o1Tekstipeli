@@ -8,14 +8,14 @@ import scala.swing.GridBagPanel._
 import javax.swing.UIManager
 import o1.adventure.Adventure
 import world.World
-import o1.adventure.NPC
+import o1.adventure._
 
 
 
 /**
  * @author pollarv1
  */
-class ChatWindow( target:NPC, text:String = "" ) extends Dialog {
+class ChatWindow( target:Character, text:String = "" ) extends Dialog {
 
   title = "Chat with " + target
   modal = true
@@ -43,8 +43,8 @@ class ChatWindow( target:NPC, text:String = "" ) extends Dialog {
            listenTo(b)
            reactions += {
              case ButtonClicked(component) if component == b =>
-               chatLog.text = World.player.chat.getClass.getMethod( option ).invoke( World.player.chat ).toString() + target.chat.getClass.getMethod( option ).invoke( target.chat ).toString()               
-               if ( target.chat.checkChange() ){
+               chatLog.text = World.player.chat.getClass.getMethod( option ).invoke( World.player.chat ).toString() + target.chatNPC.getClass.getMethod( option ).invoke( target.chatNPC ).toString()               
+               if ( target.chatNPC.checkChange() ){
                  close()
                  AdventureGUI.StartChat( target, text = chatLog.text )
                }
