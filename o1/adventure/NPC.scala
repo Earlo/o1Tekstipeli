@@ -2,7 +2,7 @@ package o1.adventure
 
 import world._
 import scala.collection.mutable.Buffer
-
+import scala.collection.mutable.Map
 
 
 /**
@@ -26,9 +26,8 @@ object NPC{
 
 }
 
-class NPC(loc: Area, name: String, flags: List[String] = List("NORM")) extends Character( loc, name, flags) {
-    
-  var HP = 10
+
+class NPC(loc: Area, name: String, stats: Map[String, Int] = Map[String, Int]() ,flags: List[String] = List("NORM")) extends Character( loc, name, stats, flags) {
   
   def has( name: String ) = {
     this.items.contains( name )
