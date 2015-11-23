@@ -2,7 +2,7 @@ package o1.adventure
 
 import world._
 import scala.collection.mutable.Buffer
-
+import scala.collection.mutable.Map
 
 
 /**
@@ -14,7 +14,7 @@ object NPC{
   
   def generateRandom( loc: Area) = {
     
-    val newGuy = new NPC( loc, RNGesus.baptise() )
+    val newGuy = new NPC( loc, RNGesus.baptise(), 10)
     World.NPCs += newGuy
     newGuy
   }
@@ -26,7 +26,8 @@ object NPC{
 
 }
 
-class NPC(loc: Area, name: String, flags: List[String] = List("NORM")) extends Character( loc, name, flags) {
+class NPC(loc: Area, name: String, startingHP: Int, flags: List[String] = List("NORM"), stats: Map[String, Int] = Map[String, Int]()) extends Character( loc, name, flags, stats) {
+  
   
   def has( name: String ) = {
     this.items.contains( name )

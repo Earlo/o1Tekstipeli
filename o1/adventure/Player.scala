@@ -27,7 +27,7 @@ object Player{
                                                    
 }
 
-class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRTG")) extends Character( loc, name, flags) {
+class Player(loc: Area, name:String = "MainDude", flags:List[String] = List("PRTG"), stats: Map[String, Int]) extends Character( loc, name, flags, stats) {
 
   private var quitCommandGiven = false              // one-way flag   
   
