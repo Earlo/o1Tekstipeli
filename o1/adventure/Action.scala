@@ -41,14 +41,12 @@ class Action(input: String) {
 
     }
     else if( actor.items.keys.toList.contains( givenModifiers(0).toLowerCase() ) ){
-      if (actor.items( givenModifiers(0).toLowerCase() ).uses.contains( this.verb.toLowerCase ){
-        
+      if (actor.items( givenModifiers(0).toLowerCase() ).uses.contains( this.verb.toLowerCase ) ){
+         Some( actor.items( givenModifiers(0).toLowerCase ).getClass.getMethod( this.verb.toLowerCase ).invoke(  actor.items( givenModifiers(0).toLowerCase() ) ).toString() )     
       }
-      
-      //verb.toLowerCase() actor.items.keys.toList.contains( givenModifiers(0) )  && actor.itemUses().contains( verb.toLowerCase() )
-      val target:Option[Item] = None
-      target = givenModifiers
-      ???
+      else{
+        None
+      }
     }
     else {
       None

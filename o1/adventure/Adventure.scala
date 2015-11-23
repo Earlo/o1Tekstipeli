@@ -17,45 +17,7 @@ class Adventure {
   /** The title of the adventure game. */
   val title = "The Game"
     
-  
-
-  
-  
-//  private val middle      = new Area("Forest", "You are somewhere in the forest. There are a lot of trees here.\nBirds are singing.")
-//  private val northForest = new Area("Forest", "You are somewhere in the forest. A tangle of bushes blocks further passage north.\nBirds are singing.")
-//  private val southForest = new Area("Forest", "The forest just goes on and on.")
-//  private val clearing    = new Area("Forest Clearing", "You are at a small clearing in the middle of forest.\nNearly invisible, twisted paths lead in many directions.")
-//  private val tangle      = new Area("Tangle of Bushes", "You are in a dense tangle of bushes. It's hard to see exactly where you're going.")
-//  private val home        = new Area("Home", "Home sweet home! Now the only thing you need is a working remote control.")
-//  private val northPole   = new Area("The North Pole", "You find yourself at the North Pole. BRRR!")
-//
-//  private val destination = home    
-//
-//       middle.setNeighbors("north" -> northForest, "east" -> tangle, "south" -> southForest, "west" -> clearing   )
-//  northForest.setNeighbors(/*"north" -> northPole,*/   "east" -> tangle, "south" -> middle,      "west" -> clearing   )
-//  southForest.setNeighbors("north" -> middle,      "east" -> tangle, "south" -> southForest, "west" -> clearing   )
-//     clearing.setNeighbors("north" -> northForest, "east" -> middle, "south" -> southForest, "west" -> northForest)
-//       tangle.setNeighbors("north" -> northForest, "east" -> home,   "south" -> southForest, "west" -> northForest)
-//         home.setNeighbors(                                                                  "west" -> tangle     )
-////    northPole.setNeighbors(                                          "south" -> northForest                       )
-
-  // TODO: place these two items in clearing and southForest, respectively
-  
-//  clearing.addItems   ("battery" -> new Item("battery", "It's a small battery cell. Looks new.") )
-//  southForest.addItems("remote"  -> new Item("remote", "It's the remote control for your TV.\nWhat it was doing in the forest, you have no idea.\nProblem is, there's no battery."))
-//  private val keyItems = Array[String]("battery","remote")
-  /** The character that the player controls in the game. */
-
-//  /** The number of turns that have passed since the start of the game. */
-//  var turnCount = 0
-//  /** The maximum number of turns that this adventure game allows before time runs out. */
-//  val timeLimit = 40 
-
-
-  /** Determines if the adventure is complete, that is, if the player has won. */
-//  def isComplete = {
-//    (this.player.location == this.destination) && this.keyItems.forall( this.player.has( _ ) )
-//  }
+  val world = World
 
   /** Determines whether the player has won, lost, or quit, thereby ending the game. */ 
   def isOver = World.player.hasQuit 
