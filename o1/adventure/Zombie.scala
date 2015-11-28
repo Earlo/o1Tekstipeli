@@ -12,27 +12,31 @@ object Zombie{
   def generateRandom( loc: Area) = {
     val newZ = new Zombie( loc, "Z"+this.num.toString, RNGesus.getStats() )
     this.num += 1
-    World.NPCs += newZ
+    World.Zombies += newZ
     newZ
   }
 }
 
-
 class Zombie (loc: Area, name: String, stats: Map[String, String] = Map[String, String]() ,flags: List[String] = List("NORM")) extends Character(loc, name, stats, flags) {
+//class Zombie (val location: Area, val name: String, val stats: Map[String, String] = Map[String, String]() ,val flags: List[String] = List("ZOMB")) {
+  //newer going to be used but had do do it anyway  I wish I was writing Python 
   val chatNPC = new ChatNPC( this )
-  
-  def chooseTarget() = {
+      
+ def chooseTarget() = {
     this.enemies(0)
   }
   
-  def attack() = {
-    if ( World.player.location == this.location){ 
-       World.combat = Some(new Combat( World.player.Party ++ Buffer[Character](World.player), Buffer[Character](this) ))
+  def die() = {
+    println("???")
+    World.Zombies -= this
+    this.location.zombies -= this
+    for (e <- this.enemies){
+      e.enemies -= this
     }
-  }
-  
-  override def act() = {
-    this.attack()
+    //this.enemies = Buffer[Character]()
+    var Dead = true
+    World.combat.get.actOrder -= this
+
   }
 
   override def toString = this.name + " Murr Murr"

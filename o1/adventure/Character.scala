@@ -1,7 +1,7 @@
 package o1.adventure
 
 import world.Area
-import world.RNGesus.rollD
+import world.RNGesus._
 
 import scala.collection.mutable.Map
 import scala.collection.mutable.Buffer
@@ -22,14 +22,18 @@ abstract class Character( var location:Area, val name:String, var stats: Map[Str
   def chatOptions():Buffer[String] = Buffer[String]()
   
   val chatNPC:ChatNPC
-  
+  var Dead = false
   var enemies = Buffer[Character]()
+  
+  var relationToPC = 0
   
   def act() = {
     
   }
   
-  
+  def socRoll() = {
+    this.relationToPC += roll(15, -5)
+  }
   val items = Map[String, Item]() 
   
   def chooseTarget():Character
@@ -47,10 +51,15 @@ abstract class Character( var location:Area, val name:String, var stats: Map[Str
   def strength = this.stats("strength")
   
   def attack(target: Character): String = {
-    //println( target.stats, this.stats )
-    if (rollD() < this.precision.toDouble) {
-      target.setHitPoints(-this.strength.toInt) 
-      this.name + "attaked" + target.name + " for " + this.strength + " damage"
-    } else this.name + " missed " + target.name
+    if (rollD() < this.precision.toDouble && !this.Dead) {
+      target.setHitPoints(-this.strength.toInt)
+      println(target.hitPoints.toInt,"hp on " + target.name)
+      if ( target.hitPoints.toInt <= 0 ){
+        target.die()
+        "\n" + this.name + " attaked " + target.name + " for " + this.strength + " damage, this killed " + target.name
+      }
+      else "\n" + this.name + " attaked " + target.name + " for " + this.strength + " damage"
+    } else "\n" + this.name + " missed " + target.name
   }
+  def die():Unit
 }

@@ -3,7 +3,7 @@ package world
 /**
  * @author pollarv1
  */
-class Time(var d:Int = 1, var h:Int = 0, var m:Int = 0){
+class Time(var d:Int = 1, var h:Int = 8, var m:Int = 0){
   
   val Suffix:Map[Int,String] = Map( 1 -> "st", 2 -> "nd", 3->"rd")
   

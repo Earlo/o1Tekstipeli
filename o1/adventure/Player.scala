@@ -24,18 +24,17 @@ object Player{
                                                       List("GET") -> List("get", "1"),
                                                       List("HAS") -> List("has", "1"),
                                                       List("TALK","CHAT") -> List("talk", "1"),
-                                                      List("INVENTORY","ITEMS") -> List("inventory","0")
-                                                     )                                                     
-                                                   
+                                                      List("INVENTORY","ITEMS") -> List("inventory","0"),
+                                                      List("HELP","HALPPLOX") -> List("help","0")
+                                                     )                                                   
 }
 
-
-
-class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], flags:List[String] = List("PRTG") ) extends Character( loc, name, stats, flags) {
+class Player(loc: Area, name:String = "The PlayerCharachter", stats: Map[String, String], flags:List[String] = List("PRTG") ) extends Character( loc, name, stats, flags) {
   //newer going to be used but had do do it anyway  
   val chatNPC = new ChatNPC( this )
     
   private var quitCommandGiven = false              // one-way flag   
+  private var isDead = false
   
   /** Determines if the player has indicated a desire to quit the game. */
   def hasQuit = this.quitCommandGiven
@@ -106,7 +105,7 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], fl
   
   def examine ( name: String) = {
     if (this.has(name)){
-      "You look closely at the "+ name +".\n" + this.items(name).description
+      "You look closely at the "+ name +".\n" + this.items(name).description + " It can be used for with following commands " + this.items(name).uses.mkString(", ")
     }
     else{
       "If you want to examine something, you need to pick it up first."
@@ -122,16 +121,27 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], fl
     * Returns a description of the results of the attempt. */
   def go(direction: String) = {
     val destination = this.location.neighbor(direction)
-    this.location = destination.getOrElse(this.location) 
-    if (destination.isDefined){ 
-      World.dTime(0) += 5
-      "You go " + direction + "."
-    } 
+    if (!destination.getOrElse(this.location).flags.contains("CLSD")){
+      this.location = destination.getOrElse(this.location) 
+      for (p <- this.Party){
+        p.location.inhabitants -= p
+        p.location = this.location
+        p.location.inhabitants += p
+      }
+      if (destination.isDefined){ 
+        World.dTime(0) += 5
+        "You go " + direction + "."
+      } 
+      else{
+        "You can't go " + direction + "."
+      }
+    }
     else{
-      "You can't go " + direction + "."
+     "The ChemistryBuilding is closed, you can't get in"
     }
   }
-
+  
+  
   def wait( t:String ) = {
     val time = t.replace("m","")
     try{
@@ -164,10 +174,22 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], fl
     ""
   }
   
+  def help() = {
+    val genericstr = "Use command(s): "
+    "This is a game where you were supposed to be able to do awfully a lot of things, but I got sick during the developement and my project partner decided that He doesn't want to do this. Here are the commands availeable to you" +{
+     
+      var commands = ""
+      for (k <- Player.commands.keys){
+        commands += genericstr + k.mkString(", ") + " to " + Player.commands(k)(0) + "\n"
+      }
+      commands
+    } + "You can only use command 'REST' in your home, there was supposed to be more commands like that but there 'aint any. Also, examine iteams to get to know their keywords"
+  }
+  
   def battleOption() = {
    val additionalOptions =  this.items.values.toBuffer.filter( _.uses.contains("attack") ).map(_.name)
    println (additionalOptions)
-   Buffer[String]("run","punch") ++ additionalOptions
+   Buffer[String]("punch") ++ additionalOptions
   }
   
   def bOptionMap() = {
@@ -176,24 +198,42 @@ class Player(loc: Area, name:String = "MainDude", stats: Map[String, String], fl
   }
   
   def attack() = {
-      println(this.nextAttack, this.nextTarget )
       val attack = 1
       if (!(this.nextAttack == "punch")){
         val attack = this.items(this.nextAttack).attack()
       }
-      println(attack)
-      val target = this.enemies.filter( _.name == this.nextTarget ).head
-      println(target)
+      if (!this.enemies.filter( _.name == this.nextTarget ).isEmpty){
+        val target = this.enemies.filter( _.name == this.nextTarget ).head
       if (RNGesus.rollD() < this.precision.toDouble) {
-        target.setHitPoints(-this.strength.toInt * attack) 
-        "You attaked" + target.name + " for " + (this.strength.toInt * attack).toString() + " damage"
-    } else this.name + " missed " + target.name
+        target.setHitPoints(-this.strength.toInt)
+        if ( target.hitPoints.toInt <= 0 ){
+          target.die()
+          "\n" + "You attaked" + target.name + " for " + this.strength + " damage, this killed " + target.name
+        }
+        else "\n" + "You attaked" + target.name + " for " + this.strength + " damage"
+      } else "\n" + "You missed " + target.name
+    }
+      else{
+        println("!!!!",this.nextTarget,this.enemies.map(_.name),"This should never happen")
+        ""
+      }
+  }
+  def addToParty( char:Character ){
+    if (!this.Party.contains(char)){
+      this.Party += char
+      char.location = this.location
+    }
   }
   
   /** Returns a brief description of the player's state, for debugging purposes. */
   override def toString = "Now at: " + this.location.name   
 
-
+  def die() = {
+    println("kuolitSaatana")
+    for (e <- this.enemies){
+      e.enemies -= this
+    }
+  }
 }
 
 

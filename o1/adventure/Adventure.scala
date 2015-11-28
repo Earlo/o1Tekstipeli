@@ -20,24 +20,27 @@ class Adventure {
   val world = World
 
   /** Determines whether the player has won, lost, or quit, thereby ending the game. */ 
-  def isOver = World.player.hasQuit 
+  def isOver = World.player.hasQuit || this.isComplete
 //
 //  /** Returns a message that is to be displayed to the player at the beginning of the game. */
-  def welcomeMessage = "geimu-starttooo~"
+  def welcomeMessage = " This is 'Otaniemi-game'."
 
     
   /** Returns a message that is to be displayed to the player at the end of the game. The message 
     * will be different depending on whether or not the player has completed their quest. */
   def goodbyeMessage = {
-//    if (this.isComplete) {
-//      "Home at last... and phew, just in time! Well done!"
-//    } else if (this.turnCount == this.timeLimit) {
+    if (this.isComplete) {
+      "Yuo're Winner"
+//    } 
+      //else if (this.turnCount == this.timeLimit) {
 //      "Oh no! Time's up. Starved of entertainment, you collapse and weep like a child.\nGame over!"
-//    } else { // game over due to player quitting
-      "Quitter!" 
-//    }
+    } else { // game over due to player quitting
+      "Good bye" 
+    }
   }
-
+  
+  
+  def isComplete = World.player.has("antidote") 
   
   /** Plays a turn by executing the given in-game command, such as "go west". Returns a textual 
     * report of what happened, or an error message if the command was unknown. In the latter 
@@ -57,16 +60,18 @@ class Adventure {
         var report = ""
         do{
           report += World.combat.get.playTrun()
-        }while (!(World.combat.get.getNext() == world.player) )
-          
-        World.combat.toString + report
+        }while (!(World.combat.get.getNext() == world.player) && !World.combat.get.checkIfOver() )
+        
+        report + World.combat.get.end()
+        
       }
       else{
         World.combat.get.info()
       }
     }
   }
-  
-  
+  if (this.isComplete){
+    
+  }
 }
 

@@ -13,12 +13,12 @@ import scala.collection.mutable.Map
 object NPC{
   def generateRandom( loc: Area) = {
     
-    val newGuy = new NPC( loc, RNGesus.baptise())
+    val newGuy = new NPC( loc, RNGesus.baptise(),  RNGesus.getStats() )
     World.NPCs += newGuy
     newGuy
   }
   val relationToString:Map[Int,String] = Map( 0 -> "stranger", 1 -> "aquintance", 2-> "friend" )
-  val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("greet"), List("introduce", "greet") )  )
+  val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("greet"), List("introduce", "greet"), List("chitchat", "greet", "introduce") )  )
   //val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("greet"), List("introduce") )  )
   //val chatMap:Map[Int,List[List[String]]] = Map(0 -> List( List("introduce") )  )
 }
@@ -29,15 +29,18 @@ class NPC(loc: Area, name: String, stats: Map[String, String] = Map[String, Stri
   def has( name: String ) = {
     this.items.contains( name )
   }
-  var relationToPC = 0
   
-  override def chatOptions() = {
-    val baseOptions = NPC.chatMap( this.relationToPC )
+  override def chatOptions() = {// dunno what I was thinking
+    val baseOptions = NPC.chatMap( 0 )
     var r = Buffer[String]()
     for (o <- baseOptions){
       if (o.tail.isEmpty || o.tail.forall( this.chatNPC.log.contains(_) ) ){
         r += o.head
       }
+    }
+    //if (this.relationToPC > 50){
+    if (this.relationToPC > 0){
+      r += "join"
     }
     r
   }
@@ -55,8 +58,9 @@ class NPC(loc: Area, name: String, stats: Map[String, String] = Map[String, Stri
     val destination = this.location.neighbor(direction)
     this.location = destination.getOrElse(this.location) 
     if (destination.isDefined) this.name+" goes to " + direction + "." else ""
-  } 
+  }
   
+
   override def act() = {
     //TODO
   }
@@ -64,6 +68,20 @@ class NPC(loc: Area, name: String, stats: Map[String, String] = Map[String, Stri
   /** Returns a brief description of the player's state, for debugging purposes. */
   override def toString = this.name   
 
+  
+  def die() = {
+    World.NPCs -= this
+    this.location.inhabitants -= this
+    for (e <- this.enemies){
+      e.enemies -= this
+    }
+    //this.enemies = Buffer[Character]()
+    var Dead = true
+    World.player.Party -= this
+    World.combat.get.actOrder -= this
+
+  }
+  
   def toZombie() = {
     new Zombie( this.loc, this.name, this.stats, this.flags )
     

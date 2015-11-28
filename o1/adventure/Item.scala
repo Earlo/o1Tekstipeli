@@ -44,6 +44,10 @@ trait Weapon {
  
 }
 
+trait Medicine{
+  def uses = List("heal")
+  
+}
 
 class ChocolateHat(name:String, desc:String, owner: Option[Character] = None) extends Item(name, desc, owner) with Edible with Wearable {
   override val uses = super[Edible].uses ++ super[Wearable].uses
@@ -51,6 +55,18 @@ class ChocolateHat(name:String, desc:String, owner: Option[Character] = None) ex
   //TODO it would be so cool to get this to work. ;:-l
   //override def uses = this.getClass.getInterfaces.toList.map( super[_].uses).sum
 }
+
+class Antidote(name:String ="antidote", desc:String ="just use it and win", owner: Option[Character] = None) extends Item(name, desc, owner) with Medicine {
+  override val uses = super[Medicine].uses
+  
+  def heal() = {
+    "Feels healthy"
+  }
+  
+  //TODO it would be so cool to get this to work. ;:-l
+  //override def uses = this.getClass.getInterfaces.toList.map( super[_].uses).sum
+}
+
 
 class Beer(name: String = "beer", description: String = "It's beer.", owner: Option[Character] = None) extends Item(name, description, owner) with Drinkable {
   
@@ -64,7 +80,7 @@ class Beer(name: String = "beer", description: String = "It's beer.", owner: Opt
   
 }
 
-class Baseballbat(name: String = "baseballbat", description: String = "It's a baseballbat. Good for whacking stuff", owner: Option[Character] = None) extends Item(name, description, owner) with Weapon {
+class Baseballbat(name: String = "baseballbat", description: String = "It's a baseballbat.", owner: Option[Character] = None) extends Item(name, description, owner) with Weapon {
   
   override val uses = super[Weapon].uses
   

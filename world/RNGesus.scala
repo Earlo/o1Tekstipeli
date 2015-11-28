@@ -3,6 +3,9 @@ package world
 import scala.util.Random
 import scala.math._
 import scala.collection.mutable.Map
+import scala.collection.mutable.Buffer
+import o1.adventure.NPC
+
 
 /**
  * @author pollarv1
@@ -44,7 +47,16 @@ object RNGesus {
   }
   
   def getStats( ) = {
-    Map("hitpoints" -> this.roll(20,10).toString, "precision" -> this.rollD( ).toString , "strength" -> this.roll(1,10).toString  )
+    Map("hitpoints" -> this.roll(20,10).toString, "precision" -> this.rollD( ).toString , "strength" -> this.roll(1,3).toString  )
   }
   
+//  def populateTheEarth() = {
+//    var b = Buffer[NPC]()
+//    for (n <- Names){
+//      b += new NPC( World.Void, n, this.getStats() )
+//    }
+//    World.Void.inhabitants = b
+//    b
+//  }
+//  
 }

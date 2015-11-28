@@ -10,7 +10,7 @@ import o1.adventure._
 // Contains the stuff common to all areas
 object Area {
   
-  val events:Map[String, List[String] ] = Map( "OPEN" -> List("populate"),
+  val events:Map[String, List[String] ] = Map("POPL" -> List("populate"),
                                               "ZOMB" -> List("addZ") )
   
 }
@@ -27,19 +27,20 @@ object Area {
 class Area(var name: String, var description: String, var flags: List[String] = List() ) {
 
   
-  private val neighbors = Map[String, Area]()
-  private val items     = Map[String, Item]()
-  private var inhabitants = Buffer[Character]()
-  private val capacity: Int = 25
+  val neighbors = Map[String, Area]()
+  val items     = Map[String, Item]()
+  var inhabitants = Buffer[Character]()
+  var zombies = Buffer[Character]()
+  val capacity: Int = 25
   
-  val eventSchedule:Map[String, String] = Map( "11100:11300" -> "populate")
+  val eventSchedule:Map[String, String] = Map( )
   
   /** Returns the area that can be reached from this area by moving in the given direction. The result 
     * is returned in an `Option`; `None` is returned if there is no exit in the given direction. */
   def neighbor(direction: String) = this.neighbors.get(direction)
 
   // Area.act makes events happen inside Areas
-  def initAct(){
+  def act(){
     for (f <- this.flags){
       if ( Area.events.keys.toList.contains(f) ){
          for (e <- Area.events(f) ){
@@ -47,13 +48,17 @@ class Area(var name: String, var description: String, var flags: List[String] = 
          }
        }
     }
-  }
- def act(){
     for (t <- this.eventSchedule.keys){
       val interval = t.split(":")
       if (World.time.asMilitaryTime() > interval(0).toInt && World.time.asMilitaryTime() < interval(1).toInt){
           this.getClass.getMethod( this.eventSchedule(t) ).invoke( this )
        }
+    }
+    if ( World.player.location == this && !this.zombies.isEmpty ){
+      val Zs = this.zombies.filter( z => RNGesus.rollD() < 0.33 ) 
+      if (Zs.size > 0 ){
+        World.combat = Some(new Combat( World.player.Party ++ Buffer[Character](World.player), Zs ) )
+      }
     }
   }
   
@@ -61,14 +66,22 @@ class Area(var name: String, var description: String, var flags: List[String] = 
     if (this.population < this.capacity) {
       val pop = RNGesus.roll( 4, 1)
       for (p <- Range(0,pop)){
-        this.inhabitants += NPC.generateRandom( this )
+          //if (!World.Void.inhabitants.isEmpty){
+            //println("???")
+            this.inhabitants += NPC.generateRandom( this )
+         // }
+        }
+        this.flags = this.flags.filterNot { _ == "POPL" }
       }
     }
-  }
   
   def addZ(){
-    this.inhabitants += Zombie.generateRandom( this )
+    for (x <- Range(0, RNGesus.roll(10,0) )){
+      this.zombies += Zombie.generateRandom( this )
+    }
+    this.flags = this.flags.filterNot { _ == "ZOMB" }
   }
+  
 
   def population = this.inhabitants.length
   
@@ -126,6 +139,12 @@ class Area(var name: String, var description: String, var flags: List[String] = 
    }
    else if(this.inhabitants.size == 1){
      namelist = "\nThere is "  + this.inhabitants.mkString(" ") + " in here."
+   }
+   if (this.zombies.size > 1){
+     namelist += "\nThere is " + this.zombies.size.toString() + " zombies here "
+   }
+   else if(this.zombies.size == 1){
+     namelist += "\nThere is a zombie in here."
    }
    namelist
   }

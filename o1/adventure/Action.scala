@@ -58,9 +58,8 @@ class Action(input: String) {
     val input = ( commandText.split(" ") ).toSet
     val attacks = actor.battleOption().toSet
     val targets = actor.enemies.map( _.name ).toSet
-    
-    println( input, attacks, targets)
     if ( input.intersect(attacks).size == 1 && input.intersect(targets).size == 1 ){
+    //if ( input.map( _.toLowerCase() ).intersect(attacks).size == 1 && input.intersect(targets).size == 1 ){
       actor.nextAttack = input.intersect(attacks).toList(0)
       actor.nextTarget = input.intersect(targets).toList(0)
       true

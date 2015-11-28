@@ -23,16 +23,7 @@ class Combat(var H:Buffer[Character],var Z:Buffer[Character] ) {
   val actOrder = rollInitative()
   
   def rollInitative() = {
-//    var rolls = Map[Int, Character]()
-//    for (char <- H){
-//      var r = RNGesus.roll(20)
-//      if ( !rolls.keys.toList.contains(r) ){
-//          rolls(r) = char
-//      }
-//    }
-//    for (z <- Z){
-//      rolls(z) = RNGesus.roll(20) 
-//    }
+
     val dice = scala.util.Random
     val list = dice.shuffle((H++Z))
     list -= World.player
@@ -46,24 +37,38 @@ class Combat(var H:Buffer[Character],var Z:Buffer[Character] ) {
   def playTrun() = {
     
     val actor = this.actOrder.head
-    var report = "Attack didn't happen"
-    
-    if (actor == World.player){
-      report = World.player.attack()
-    }
+    if (!actor.enemies.isEmpty){
+      var report = "Attack didn't happen"
+      if (actor == World.player){
+        report = World.player.attack()
+        }
+      else{
+         var target = actor.chooseTarget() 
+         report = actor.attack( target )
+        }
+      this.actOrder.remove(0)
+      this.actOrder += actor
+      report
+      }
     else{
-       var target = actor.chooseTarget() 
-       report = actor.attack( target )
+     ""
+      //this.end() 
+    } 
+  }
+
+  def checkIfOver() = {
+    Z.size == 0 || H.size == 0
+  }
+  def end() = {
+    if (this.checkIfOver()){
+      World.combat = None
+      "\nThe battle ended in the victory of " + this.getNext().name
     }
-    
-    this.actOrder.remove(0)
-    this.actOrder += actor
-    report
-    }
-  
+    else ""
+  }
   
   def info() = {
-    "You are in battle against " + World.player.enemies.map( _.name ).mkString(", ") + ". Commands availeable to you are " + World.player.battleOption().toString()
+    "You are in battle against " + World.player.enemies.map( _.name ).mkString(", ") + (if (!(World.player.Party.size == 0)) " With your team of " + World.player.Party.mkString(", ")  )+". Commands availeable to you are: " + World.player.battleOption().mkString(", ")
   }
 //  
 //  def runCombat() = {
@@ -73,7 +78,7 @@ class Combat(var H:Buffer[Character],var Z:Buffer[Character] ) {
 //    }
     
   override def toString() = {
-    "you are figthing against " + this.Z.size.toString + " Zombies" + " \n" + " Z " * this.Z.size + "\n\n" + " H " * this.H.size
+    "You are figthing against " + this.Z.size.toString + " Zombies" + " \n" + " Z " * this.Z.size + "\n\n" + " H " * this.H.size
     }
   
 }
